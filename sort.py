@@ -4,49 +4,41 @@ import shutil
 import zipfile
 from kaggle.api.kaggle_api_extended import KaggleApi
 
-# Konfiguracja datasetu Kaggle
-DATASET = "wjybuqi/traffic-light-detection-dataset"  # <- Zamień na właściwe ID datasetu
+DATASET = "wjybuqi/traffic-light-detection-dataset"
 DATASET_PATH = "train_dataset"
-ZIP_FILE = f"{DATASET_PATH}.zip"  # Nazwa pliku ZIP
+ZIP_FILE = f"{DATASET_PATH}.zip"
 
-# Ścieżki do plików
 data_json = os.path.join(DATASET_PATH, "train.json")
 images_root = os.path.join(DATASET_PATH, "train_images")
 output_root = os.path.join(DATASET_PATH, "sorted_images")
 
 def download_data():
-    """Pobiera i rozpakowuje cały dataset z Kaggle, jeśli jeszcze go nie ma."""
-    if not os.path.exists(DATASET_PATH):  # Jeśli folder nie istnieje
+    if not os.path.exists(DATASET_PATH):
         os.makedirs(DATASET_PATH, exist_ok=True)
         
         api = KaggleApi()
-        api.authenticate()  # Logowanie do API
+        api.authenticate()
         
-        print("Pobieranie całego datasetu...")
-        api.dataset_download_files(DATASET, path=".", unzip=True)  # Pobiera ZIP i rozpakowuje
-
-        print("Pobieranie zakończone.")
-    
+        print("Downloading dataset...")
+        api.dataset_download_files(DATASET, path=".", unzip=True)
+        print("Download complete.")
     else:
-        print("Dataset już pobrany.")
+        print("Dataset already downloaded.")
 
-# Pobieranie danych, jeśli są potrzebne
 download_data()
 
-# Wczytanie pliku JSON
 if not os.path.exists(data_json):
-    raise FileNotFoundError(f"Nie znaleziono pliku JSON: {data_json}")
+    raise FileNotFoundError(f"JSON file not found: {data_json}")
 
 with open(data_json, "r", encoding="utf-8") as f:
     data = json.load(f)
 
-# Sortowanie plików według kolorów
 for annotation in data["annotations"]:
     filename = annotation["filename"]
     file_path = os.path.join(images_root, os.path.basename(filename))
 
     if not os.path.exists(file_path):
-        print(f"Plik {file_path} nie istnieje, pomijam...")
+        print(f"File {file_path} does not exist, skipping...")
         continue
 
     colors = set(inbox["color"] for inbox in annotation.get("inbox", []))
@@ -60,6 +52,6 @@ for annotation in data["annotations"]:
         
         target_path = os.path.join(color_dir, os.path.basename(filename))
         shutil.copy2(file_path, target_path)
-        print(f"Skopiowano {file_path} -> {target_path}")
+        print(f"Copied {file_path} -> {target_path}")
 
-print("Sortowanie zakończone!")
+print("Sorting complete!")
