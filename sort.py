@@ -4,11 +4,11 @@ import shutil
 from kaggle.api.kaggle_api_extended import KaggleApi
 
 # Kaggle dataset configuration
-DATASET = "wjybuqi/traffic-light-detection-dataset"  # <- Replace with the correct dataset ID
+DATASET = "wjybuqi/traffic-light-detection-dataset" 
 DATASET_PATH = "train_dataset"
-ZIP_FILE = f"{DATASET_PATH}.zip"  # ZIP file name
+ZIP_FILE = f"{DATASET_PATH}.zip" 
 
-# File paths
+
 data_json = os.path.join(DATASET_PATH, "train.json")
 images_root = os.path.join(DATASET_PATH, "train_images")
 output_root = os.path.join(DATASET_PATH, "train_images")
@@ -45,7 +45,7 @@ if any(os.path.isdir(os.path.join(output_root, d)) for d in os.listdir(output_ro
 else:
     # Store sorted files
     sorted_files = set()
-    unclassified_root = os.path.join(output_root, "no_traffic_light")  # Place unclassified folder inside sorted images
+    unclassified_root = os.path.join(output_root, "no_traffic_light") 
     os.makedirs(unclassified_root, exist_ok=True)
 
     # Sort files by color
